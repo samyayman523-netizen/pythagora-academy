@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أكاديمية فيثاغورث | الرياضيات ببساطة</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header class="site-header">
+  <a class="logo" href="#" onclick="go('home')"><span class="sigma">∑</span><span>أكاديمية <b>فيثاغورث</b><small>PYTHAGORAS ACADEMY</small></span></a>
+  <button class="menu-btn" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
+  <nav class="nav">
+    <button onclick="go('home')">الرئيسية</button><button onclick="go('grades')">الصفوف</button>
+    <button onclick="go('lessons')">شرح الدروس</button><button onclick="go('bank')">بنك الأسئلة</button>
+    <button onclick="go('challenges')">التحديات</button><button onclick="go('student')">امتحان أونلاين</button>
+    <button class="teacher-nav" onclick="go('teacherLogin')">لوحة المدرس</button>
+  </nav>
+</header>
+<main>
+<section id="home" class="view">
+  <div class="hero">
+    <div class="hero-copy"><span class="eyebrow">تعلم • تدرب • تفوق</span><h1>الرياضيات مش صعبة…<br><em>لما تفهمها صح!</em></h1>
+      <p>رحلتك في الرياضيات تبدأ من هنا. شرح وتدريبات وبنك أسئلة وامتحانات أونلاين لكل المراحل.</p>
+      <div class="hero-actions"><button class="gold" onclick="go('grades')">ابدأ التعلم</button><button class="ghost" onclick="go('student')">ادخل كود امتحان</button></div>
+    </div>
+    <div class="teacher-frame"><div class="frame-glow"></div><img src="assets/teacher.jpg" alt="صورة مدرس الرياضيات"><div class="teacher-caption"><b>مدرس الرياضيات</b><span>أكاديمية فيثاغورث</span></div></div>
+  </div>
+  <div class="stats"><div><b>12</b><span>صف دراسي</span></div><div><b>3</b><span>مراحل تعليمية</span></div><div><b>∞</b><span>فرص للتفوق</span></div></div>
+  <h2 class="section-title">كل اللي تحتاجه في مكان واحد</h2>
+  <div class="feature-grid">
+    <article class="feature" onclick="go('lessons')"><span>∑</span><h3>شرح الدروس</h3><p>مساحة منظمة لشرح المنهج ومراجعة الأفكار الأساسية.</p></article>
+    <article class="feature" onclick="go('bank')"><span>✎</span><h3>بنك الأسئلة</h3><p>تدرب على أسئلة متنوعة واعرف إجابتك فورًا.</p></article>
+    <article class="feature" onclick="go('challenges')"><span>★</span><h3>تحديات رياضية</h3><p>اختبر سرعة تفكيرك في تحديات قصيرة.</p></article>
+    <article class="feature" onclick="go('student')"><span>✓</span><h3>امتحانات أونلاين</h3><p>ادخل كود الامتحان وحل في الوقت المحدد.</p></article>
+  </div>
+</section>
+
+<section id="grades" class="view hidden">
+  <div class="page-head"><span class="eyebrow">المراحل التعليمية</span><h1>اختار صفك الدراسي</h1><p>اختر المرحلة ثم الصف لعرض المحتوى المتاح.</p></div>
+  <div class="grade-groups">
+    <div class="grade-group"><h2>المرحلة الابتدائية</h2><div class="grade-grid" id="primaryGrades"></div></div>
+    <div class="grade-group"><h2>المرحلة الإعدادية</h2><div class="grade-grid" id="prepGrades"></div></div>
+    <div class="grade-group"><h2>المرحلة الثانوية</h2><div class="grade-grid" id="secondaryGrades"></div></div>
+  </div>
+  <p id="selectedGrade" class="notice">اختار صفًا لعرض محتواه.</p>
+</section>
+
+<section id="lessons" class="view hidden">
+  <div class="page-head"><span class="eyebrow">افهم الفكرة</span><h1>شرح الدروس</h1><p>اختر صفك ثم افتح الدرس. يمكن إضافة شرح المنهج بالتفصيل لاحقًا.</p></div>
+  <label class="field">الصف الدراسي<select id="lessonGrade" onchange="renderLessons()"></select></label>
+  <div id="lessonList" class="lesson-list"></div>
+</section>
+
+<section id="bank" class="view hidden">
+  <div class="page-head"><span class="eyebrow">تدرب بنفسك</span><h1>بنك الأسئلة</h1><p>أسئلة تدريبية أولية للتجربة، ويمكن توسيع البنك لكل صف ووحدة.</p></div>
+  <div class="filters"><label class="field">الصف<select id="bankGrade" onchange="renderBank()"></select></label><label class="field">نوع السؤال<select id="bankType" onchange="renderBank()"><option value="all">كل الأسئلة</option><option value="mcq">اختيار من متعدد</option></select></label></div>
+  <div id="bankList"></div>
+</section>
+
+<section id="challenges" class="view hidden">
+  <div class="page-head"><span class="eyebrow">فكر بسرعة</span><h1>التحديات الرياضية</h1><p>حل السؤال وشوف نتيجتك.</p></div>
+  <div class="challenge-card"><div class="challenge-mark">?</div><h2 id="challengeQuestion">اضغط ابدأ التحدي</h2><div id="challengeOptions" class="challenge-options"></div><p id="challengeFeedback" class="feedback"></p><button class="gold" onclick="newChallenge()">ابدأ تحديًا</button></div>
+</section>
+
+<section id="student" class="view hidden">
+  <div class="page-head"><span class="eyebrow">اختبر مستواك</span><h1>دخول امتحان أونلاين</h1><p>اكتب اسمك والصف وكود الامتحان الذي أعطاه لك المدرس.</p></div>
+  <div class="form-card"><label class="field">اسم الطالب<input id="studentName" placeholder="اسمك بالكامل"></label>
+  <label class="field">الصف الدراسي<select id="studentGrade"></select></label>
+  <label class="field">كود الامتحان<input id="examCode" placeholder="مثال: MATH2026"></label>
+  <button class="gold full" onclick="startExam()">ابدأ الامتحان</button><p id="studentMsg" class="msg"></p></div>
+</section>
+
+<section id="exam" class="view hidden">
+  <div class="exam-top"><div><span class="eyebrow">امتحان أونلاين</span><h1 id="examTitle"></h1><p id="examInfo"></p></div><div class="timer" id="timer">--:--</div></div>
+  <div id="questions"></div><button class="gold full" onclick="submitExam(false)">تسليم الامتحان</button><p id="examMsg" class="msg"></p>
+</section>
+<section id="result" class="view hidden"><div class="result-card"><div class="success-mark">✓</div><h1>تم تسليم الامتحان</h1><p id="resultText"></p><button class="gold" onclick="go('home')">العودة للرئيسية</button></div></section>
+
+<section id="teacherLogin" class="view hidden">
+  <div class="page-head"><span class="eyebrow">إدارة الأكاديمية</span><h1>دخول المدرس</h1></div>
+  <div class="form-card"><label class="field">البريد الإلكتروني<input id="teacherEmail" type="email"></label><label class="field">كلمة المرور<input id="teacherPassword" type="password"></label><button class="gold full" onclick="teacherSignIn()">تسجيل الدخول</button><p id="loginMsg" class="msg"></p></div>
+</section>
+<section id="dashboard" class="view hidden">
+  <div class="dash-head"><div><span class="eyebrow">إدارة الامتحانات</span><h1>لوحة المدرس</h1><p id="teacherWho"></p></div><button class="ghost" onclick="teacherSignOut()">تسجيل الخروج</button></div>
+  <div class="tabs"><button class="tab active" onclick="tab('create')">إنشاء امتحان</button><button class="tab" onclick="tab('results')">نتائج الطلاب</button></div>
+  <div id="createTab"><div class="form-card">
+    <label class="field">عنوان الامتحان<input id="newTitle" placeholder="امتحان الوحدة الأولى"></label>
+    <label class="field">الصف<select id="newGrade"></select></label>
+    <div class="filters"><label class="field">كود الامتحان<input id="newCode" placeholder="MATH2026"></label><label class="field">المدة بالدقائق<input id="newMinutes" type="number" min="1" value="30"></label></div>
+    <label class="field">تعليمات<textarea id="newInstructions" rows="2"></textarea></label>
+    <h3>أسئلة الامتحان</h3><div id="questionEditor"></div><button class="ghost full" onclick="addQuestion()">＋ إضافة سؤال</button><button class="gold full" onclick="createExam()">نشر الامتحان</button><p id="createMsg" class="msg"></p>
+  </div></div>
+  <div id="resultsTab" class="hidden"><button class="ghost" onclick="loadResults()">تحديث النتائج</button><div id="resultsList"></div></div>
+</section>
+</main>
+<footer><span>∑</span> أكاديمية فيثاغورث <small>التعلم خطوة… والتفوق رحلة</small></footer>
+<script src="app.js"></script>
+</body></html>
